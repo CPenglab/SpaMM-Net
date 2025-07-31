@@ -3,14 +3,12 @@ SpaMM-Net: spatially multimodal and multiscale network for representation learni
 ## Installation
 1. Clone this repo.
 2. Copy "SpaMM-Net" folder in your project.
-```
 
-```
 ## Example
 ### Quick Start
 #### 1. data loading
 ```
-import SpaMM as spm
+import spamm as spm
 
 # load data
 om1_adata, om2_adata = spm.load_test_data(idx = 1)
