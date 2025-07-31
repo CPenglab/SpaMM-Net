@@ -44,3 +44,20 @@ The 'output' is a dictionary with:
 - 'feat' as a fixed key
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
 
+#### 3. clustering
+Then you can cluster using the fused features.
+```
+feat = output["feat"].cpu().detach().numpy()
+adata_feat = sc.AnnData(X = feat)
+sc.pp.neighbors(
+    adata_feat,
+    n_neighbors=50,
+    random_state=2025
+)
+sc.tl.leiden(
+    adata_feat,
+    resolution = 0.85,
+    flavor="igraph",
+    random_state=2025
+)
+```
