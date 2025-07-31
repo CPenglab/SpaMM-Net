@@ -3,6 +3,7 @@ SpaMM-Net: spatially multimodal and multiscale network for representation learni
 ## Installation
 1. Clone this repo.
 2. Copy "SpaMM-Net" folder in your project.
+
 ## Example
 ### Quick Start
 #### 1. data loading
@@ -14,7 +15,8 @@ import spamm as spm
 om1_adata = sc.read_h5ad('/path/to/om1.h5ad')
 om2_adata = sc.read_h5ad('/path/to/om2.h5ad')
 
-# data preprocessing
+# data preprocessing(Optional)
+# This step performs PCA to generate the "X_pca" matrix in om1_adata.obsm and om2_adata.obsm.
 spm.preprocessing(
     om1_adata, om2_adata,
     n_comps = 50, random_state = 2025
@@ -41,3 +43,9 @@ output, model = spm.run_spamm(
 The 'output' is a dictionary with:
 - 'feat' as a fixed key
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
+
+#### 3. visualization
+```
+import seaborn as sns
+
+```
