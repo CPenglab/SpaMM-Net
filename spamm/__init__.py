@@ -31,6 +31,9 @@ def run_spamm(
     Returns:
         dict: Extracted features.
     """
+    sp_net = torch.tensor(adata.uns["sp_net"], dtype = torch.int64)
+    om1_net = torch.tensor(adata.uns["om1_net"], dtype = torch.int64)
+    om2_net = torch.tensor(adata.uns["om2_net"], dtype = torch.int64)
     spmm = SpaMM(
         in_ch = adata.X.shape[-1],
         scales = scale,
@@ -38,9 +41,9 @@ def run_spamm(
     )
     spmm.fit(
         omics = torch.tensor(adata.X),
-        sp_net = adata.uns["sp_net"],
-        om1_net = adata.uns["om1_net"],
-        om2_net = adata.uns["om2_net"],
+        sp_net = sp_net,
+        om1_net = om1_net,
+        om2_net = om2_net,
         epochs = epochs,
         lr = lr, lr_step = lr_step, gamma = gamma,
         recon_w = recon_w, scales_w = scales_w, total_w = total_w,
@@ -51,9 +54,9 @@ def run_spamm(
 
     out = spmm.trans(
         omics = torch.tensor(adata.X),
-        sp_net = adata.uns["sp_net"],
-        om1_net = adata.uns["om1_net"],
-        om2_net = adata.uns["om2_net"]
+        sp_net = sp_net,
+        om1_net = om1_net,
+        om2_net = om2_net
     )
     
     if rtn_model:
