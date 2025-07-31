@@ -44,8 +44,3 @@ The 'output' is a dictionary with:
 - 'feat' as a fixed key
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
 
-#### 3. visualization
-```
-import seaborn as sns
-
-```
