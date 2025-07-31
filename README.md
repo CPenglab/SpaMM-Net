@@ -3,9 +3,6 @@ SpaMM-Net: spatially multimodal and multiscale network for representation learni
 ## Installation
 1. Clone this repo.
 2. Copy "SpaMM-Net" folder in your project.
-```
-
-```
 ## Example
 ### Quick Start
 #### 1. data loading
