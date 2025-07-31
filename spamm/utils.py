@@ -19,12 +19,12 @@ def multi_corr(x: np.ndarray, dist = ["eu", "cos"], weight = None): # [.6, .4]
     if "eu" in dist:
         x_eu = squareform(pdist(x, metric = "eu"))
         sigma = np.median(x_eu[x_eu != 0])
-        x_eu = np.exp(-x_eu**2 / (2*(sigma**2))) # 使用高斯核将距离转化为类似相关系数
-        np.fill_diagonal(x_eu, 0) # 对角线置0
+        x_eu = np.exp(-x_eu**2 / (2*(sigma**2)))
+        np.fill_diagonal(x_eu, 0)
         mtx.append(torch.tensor(x_eu))
     if "cos" in dist:
         x_cos = squareform(pdist(x, metric = "cosine"))
-        x_cos = 1 - x_cos # 余弦距离转化为余弦相似度
+        x_cos = 1 - x_cos
         x_cos = (x_cos - x_cos.min())/(x_cos.max() - x_cos.min())
         np.fill_diagonal(x_cos, 0)
         mtx.append(torch.tensor(x_cos))
@@ -45,18 +45,7 @@ def knn(x: torch.Tensor, k = 8, weight = False):
     return adj
 
 class DynamicBalancedLoss(nn.Module):
-    # 出自:Multi-Task Learning Using Uncertainty to Weigh Losses for Scene Geometry and Semantics
-    # 这里加了reg_clamp, 试过原版本,效果不好
     def __init__(self, loss_n: int, init_scale: float = 1.0, reg_clamp = [0, 10]):
-        '''
-        Args:
-            loss_n (int): 预计要平衡多少个损失。
-            init_scale (float, optional): 每个损失的加权参数中sigma的初始化. Defaults to 1.0.
-            reg_clamp (list, optional): 最终的正则项的截断范围. 之所以会有这一项是因为出现了平衡
-                后的总损失出现了负数的情况. 损失为MSE的大多数情况下, 加上的正则项不应该为负数
-                (deepseek: L = mse + reg情况下reg不应为负), 所以这里将min设为了0, max可以按需设置.
-                Defaults to [0, 10].
-        '''
         super().__init__()
 
         self.log_sigmas = nn.Parameter(
@@ -74,7 +63,6 @@ class DynamicBalancedLoss(nn.Module):
         
         reg_term = torch.sum(self.log_sigmas)
         
-        # 总损失
         total_loss = torch.sum(torch.stack(weighted_losses)) + reg_term
         
         return total_loss
@@ -82,10 +70,6 @@ class DynamicBalancedLoss(nn.Module):
 
 
 def init_weights(m):
-    """
-    用于初始化并固定模型权重, 以使结果可复现
-    """
-
     if isinstance(m, nn.Linear):
         with torch.random.fork_rng():
             torch.nn.init.xavier_uniform_(m.weight)
@@ -114,12 +98,12 @@ def preprocessing(
     else:
         raise ValueError("n_comps type should be list or int.")
 
-    sc.pp.normalize_total(om1_adata) # , target_sum=1e6
+    sc.pp.normalize_total(om1_adata)
     sc.pp.log1p(om1_adata)
     sc.pp.highly_variable_genes(om1_adata, n_top_genes=3000)
     sc.pp.pca(om1_adata, n_comps = om1_comps, random_state = random_state)
 
-    sc.pp.normalize_total(om2_adata) # , target_sum=1e6
+    sc.pp.normalize_total(om2_adata)
     sc.pp.log1p(om2_adata)
     sc.pp.highly_variable_genes(om2_adata, n_top_genes=3000)
     sc.pp.pca(om2_adata, n_comps = om2_comps, random_state = random_state)
@@ -143,7 +127,7 @@ def adata_const(
     adata.obsm["spatial"] = om1_adata.obsm["spatial"]
 
     sp_net = knn_graph(torch.tensor(om1_adata.obsm["spatial"]), k = spatial_net_k)
-    adata.uns["sp_net"] = sp_net
+    adata.uns["sp_net"] = sp_net.detach().cpu().numpy()
 
     om1_net = multi_corr(om1, dist = om_net_dist, weight = om_net_weight)
     om2_net = multi_corr(om2, dist = om_net_dist, weight = om_net_weight)
@@ -152,8 +136,8 @@ def adata_const(
     om1_net = knn(om1_net.sum(0), k = om1_k, weight=False)
     om2_net = knn(om2_net.sum(0), k = om2_k, weight=False)
 
-    adata.uns[f"om1_net"] = dense_to_sparse(om1_net)[0]
-    adata.uns[f"om2_net"] = dense_to_sparse(om2_net)[0]
+    adata.uns[f"om1_net"] = dense_to_sparse(om1_net)[0].detach().cpu().numpy()
+    adata.uns[f"om2_net"] = dense_to_sparse(om2_net)[0].detach().cpu().numpy()
     return adata
 
 
@@ -165,20 +149,6 @@ def pca(data, n_components, random_state=2025):
 
 
 def set_random_seed(seed, acc_ctrl = False) -> None:
-    """设置随机数以便重复结果
-
-    Args:
-        seed (int): 随机数
-        acc_ctrl (bool): 精度控制。即便设置了下面这堆种子,
-            pytorch仍有因cuda和cpu的最底层算法的不确定所导致
-            的精度不同, 也就是极小的小数点级别的不同。在通常
-            这些精度非常小的差异是不妨碍重复的, 但我确实遇到了
-            就因为这点精度所导致的聚类结果不同。所以这里直接
-            固定底层算法, 让精度也不变! 
-            注意!!!这玩意儿只在eval无法重复时使用! 千万别在
-            train的时候使用!会破坏训练的!!
-    """
-    # acc_ctrl: 即使设定了下面的这些随机种子
     os.environ['PYTHONHASHSEED'] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
@@ -191,5 +161,3 @@ def set_random_seed(seed, acc_ctrl = False) -> None:
     torch.use_deterministic_algorithms(acc_ctrl, warn_only=False)
 
     os.environ['PYTHONHASHSEED'] = str(seed)
-    os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
-
