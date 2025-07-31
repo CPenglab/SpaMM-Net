@@ -11,7 +11,7 @@ def run_spamm(
     lr_step = [100, 200], gamma = .1,
     recon_w = None, scales_w = [.1, .2, .2],
     total_w = None, top_align_w = 0.1, weight_decay = 1e-4,
-    rtn_model = False, device = None, acc_ctrl = True
+    rtn_model = False, device = None, acc_ctrl = False
 ):
     """Run spamm.
 
