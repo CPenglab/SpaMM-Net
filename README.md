@@ -3,7 +3,18 @@ SpaMM-Net: spatially multimodal and multiscale network for representation learni
 ## Installation
 1. Clone this repo.
 2. Copy the "spamm" and "datasets" folders into your project.
-
+## Example
+### Environment
+For testing, we recommend using Anaconda to run our project. You can run the following commands in Anaconda to create the required environment.
+#### 1. Create a new Anaconda environment:
+```
+conda create -n spamm python=3.10
+conda activate spamm
+```
+#### 2. Install the required python packages:
+```
+pip install -r requirments.txt
+```
 ## Example
 ### Quick Start
 #### 1. data loading
