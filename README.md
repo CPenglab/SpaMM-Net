@@ -1,5 +1,5 @@
 # SpaMM-Net
-SpaMM-Net: spatially multimodal and multiscale network for representation learning from spatial multi-omics
+Spatially multimodal and multiscale network for representation learning from spatial multi-omics
 ## Installation
 1. Clone this repo.
 2. Copy the "spamm" and "datasets" folders into your project.
@@ -18,7 +18,7 @@ pip install -r requirments.txt
 ## Example
 ### Quick Start
 #### 1. data loading
-You can load your .h5ad files with scanpy. then process the objects with the preprocessing and adata_const functions provided by the 'spamm'.
+You can load the .h5ad files with scanpy, and then process the objects with the preprocessing and adata_const functions provided by the 'spamm'.
 ```
 import scanpy as sc
 import spamm as spm
@@ -56,7 +56,7 @@ The 'output' is a dictionary with:
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
 
 #### 3. clustering
-Then you can cluster using the fused features.
+Then you can perform the clustering with the fused features.
 ```
 feat = output["feat"].cpu().detach().numpy()
 adata_feat = sc.AnnData(X = feat)
