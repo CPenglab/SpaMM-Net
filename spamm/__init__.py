@@ -34,6 +34,8 @@ def run_spamm(
     Returns:
         dict: Extracted features.
     """
+    torch.use_deterministic_algorithms(acc_ctrl, warn_only=False)
+    
     sp_net = torch.tensor(adata.uns["sp_net"], dtype = torch.int64)
     om1_net = torch.tensor(adata.uns["om1_net"], dtype = torch.int64)
     om2_net = torch.tensor(adata.uns["om2_net"], dtype = torch.int64)
@@ -52,8 +54,6 @@ def run_spamm(
         recon_w = recon_w, scales_w = scales_w, total_w = total_w,
         top_align_w = top_align_w, weight_decay = weight_decay
     )
-
-    torch.use_deterministic_algorithms(acc_ctrl, warn_only=False)
 
     out = spmm.trans(
         omics = torch.tensor(adata.X),
