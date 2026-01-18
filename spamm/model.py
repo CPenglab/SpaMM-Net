@@ -1,5 +1,6 @@
 from tqdm import tqdm
 from typing import Optional
+import warnings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -182,6 +183,12 @@ class SpaMM(nn.Module):
 
         if device == "cpu":
             device_finder = "cpu"
+        elif device == "cuda":
+            if torch.cuda.is_available():
+                device_finder = "cuda:0"
+            else:
+                warnings.warn('CUDA is not available, falling back to CPU.', RuntimeWarning)
+                device_finder = "cpu"
         else:
             device_finder = "cuda:0" if torch.cuda.is_available() else "cpu"
         self.device = torch.device(device_finder)
