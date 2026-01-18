@@ -9,8 +9,11 @@ adata = spm.load_test_data(idx = 0)
 # training
 output, model = spm.run_spamm(
     adata, scale = 3, epochs = 600, lr = 0.001, lr_step = [100, 200], gamma = 0.1,
-    rtn_model = True, acc_ctrl=False
+    rtn_model = True, acc_ctrl=False,
+    device = 'cpu' # Use CPU by default for reproducibility and hardware compatibility
 )
+# GPU (optional, faster; requires a PyTorch build compatible with your GPU)
+# output, model = spm.run_spamm(..., device="cuda")
 
 # clustering
 feat = output["feat"].cpu().detach().numpy()
