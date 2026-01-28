@@ -21,8 +21,8 @@ class SC_attn(nn.Module):
         
         self.om_v = nn.Linear(3 * in_ch, out_ch)
         
-        self.conf1 = nn.Linear(2 * in_ch, out_ch) # 置信度
-        self.conf2 = nn.Linear(2 * in_ch, out_ch)
+        self.conf1 = nn.Linear(2 * in_ch, out_ch) 
+        self.init_anchor = nn.Linear(2 * in_ch, out_ch) # unused; kept for backward compatibility / init-order reproducibility
     def forward(self, sp, om1, om2):
         om_cat = torch.cat([sp, om1, om2], dim = -1)
           
