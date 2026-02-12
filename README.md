@@ -11,9 +11,23 @@ For testing, we recommend using Anaconda to run our project. You can run the fol
 conda create -n spamm python=3.10
 conda activate spamm
 ```
+#### 2. Create a conda environment
+```
+conda create -n spamm python=3.10 -y
+conda activate spamm
+```
 #### 2. Install the required python packages:
 ```
-pip install -r requirments.txt
+pip install torch==2.5.1+cu124 torchvision torchaudio \
+  --index-url https://download.pytorch.org/whl/cu124
+
+pip install torch_geometric==2.6.1 \
+  -f https://data.pyg.org/whl/torch-2.5.1+cu124.html
+
+pip install numpy==2.2.6 scipy==1.15.3 pandas==2.3.1 
+pip install scikit_learn==1.7.1 tqdm==4.67.1 igraph==0.11.8
+
+pip install scanpy==1.11.4
 ```
 ## Example
 ### Quick Start
@@ -67,7 +81,7 @@ sc.pp.neighbors(
 )
 sc.tl.leiden(
     adata_feat,
-    resolution = 0.85,
+    resolution = 1,
     flavor="igraph",
     random_state=2025
 )
