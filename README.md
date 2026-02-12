@@ -60,7 +60,7 @@ spm.set_random_seed(2025, acc_ctrl = True)
 
 output, model = spm.run_spamm(
     adata, scale = 3, epochs = 600, lr = 0.001, lr_step = [100, 200], gamma = 0.1,
-    rtn_model = True, device = 'cuda'
+    rtn_model = True, device = 'cuda:0'
 )
 ```
 The 'output' is a dictionary with:
