@@ -11,7 +11,7 @@ def run_spamm(
     lr_step = [100, 200], gamma = .1,
     recon_w = None, scales_w = [.1, .2, .2],
     total_w = None, top_align_w = 0.1, weight_decay = 1e-4,
-    rtn_model = False, device = None, acc_ctrl = False
+    rtn_model = False, device = None
 ):
     """Run spamm.
 
@@ -29,13 +29,11 @@ def run_spamm(
         weight_decay (float, optional): Parameter weight_decay in Adam. Defaults to 1e-4.
         rtn_model (bool, optional): Whether to return the model. Defaults to False.
         device (str, optional): The device is used to training. Defaults to None.
-        acc_ctrl (bool, optional): Sets whether PyTorch operations must use “deterministic” algorithms. Defaults to False.
-
+        
     Returns:
         dict: Extracted features.
     """
-    torch.use_deterministic_algorithms(acc_ctrl, warn_only=False)
-    
+
     sp_net = torch.tensor(adata.uns["sp_net"], dtype = torch.int64)
     om1_net = torch.tensor(adata.uns["om1_net"], dtype = torch.int64)
     om2_net = torch.tensor(adata.uns["om2_net"], dtype = torch.int64)
