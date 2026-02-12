@@ -8,11 +8,6 @@ Spatially multimodal and multiscale network for representation learning from spa
 For testing, we recommend using Anaconda to run our project. You can run the following commands in Anaconda to create the required environment.
 #### 1. Create a new Anaconda environment:
 ```
-conda create -n spamm python=3.10
-conda activate spamm
-```
-#### 2. Create a conda environment
-```
 conda create -n spamm python=3.10 -y
 conda activate spamm
 ```
