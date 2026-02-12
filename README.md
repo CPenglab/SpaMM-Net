@@ -60,12 +60,22 @@ spm.set_random_seed(2025, acc_ctrl = True)
 
 output, model = spm.run_spamm(
     adata, scale = 3, epochs = 600, lr = 0.001, lr_step = [100, 200], gamma = 0.1,
-    rtn_model = True
+    rtn_model = True, device = 'cuda'
 )
 ```
 The 'output' is a dictionary with:
 - 'feat' as a fixed key
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
+If you see:RuntimeError: CUDA error: no kernel image is available for execution on the device
+This means your installed PyTorch does not support your GPU architecture.
+Please use "decice = 'cpu'", or upgrade PyTorch:
+```
+pip uninstall -y torch torchvision torchaudio torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv
+pip install --no-cache-dir torch torchvision torchaudio \
+  --index-url https://download.pytorch.org/whl/cu128
+pip install --no-cache-dir torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv \
+  -f https://data.pyg.org/whl/torch-2.7.0+cu128.html
+```
 
 #### 3. clustering
 Then you can perform the clustering with the fused features.
