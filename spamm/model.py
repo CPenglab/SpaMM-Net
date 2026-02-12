@@ -21,7 +21,7 @@ class SC_attn(nn.Module):
         
         self.om_v = nn.Linear(3 * in_ch, out_ch)
         
-        self.conf1 = nn.Linear(2 * in_ch, out_ch) 
+        self.conf = nn.Linear(2 * in_ch, out_ch) 
         self.init_anchor = nn.Linear(2 * in_ch, out_ch) # unused; kept for backward compatibility / init-order reproducibility
     def forward(self, sp, om1, om2):
         om_cat = torch.cat([sp, om1, om2], dim = -1)
@@ -34,8 +34,8 @@ class SC_attn(nn.Module):
         attn1 = torch.softmax(q @ om1_k.T / (q.shape[-1] ** .5), dim = -1) @ om_v
         attn2 = torch.softmax(q @ om2_k.T / (q.shape[-1] ** .5), dim = -1) @ om_v
         
-        conf1 = torch.sigmoid(self.conf1(torch.cat([sp, om1], dim = -1)))
-        conf2 = torch.sigmoid(self.conf1(torch.cat([sp, om2], dim = -1)))
+        conf1 = torch.sigmoid(self.conf(torch.cat([sp, om1], dim = -1)))
+        conf2 = torch.sigmoid(self.conf(torch.cat([sp, om2], dim = -1)))
         conf = torch.softmax(torch.stack([conf1, conf2], dim = -2), dim = -2)
         
         out = conf[:, 0, :] * attn1 + conf[:, 1, :] * attn2
