@@ -67,8 +67,10 @@ The 'output' is a dictionary with:
 - 'feat' as a fixed key
 - Dynamic keys 'scale1', 'scale2', ..., up to the number you specified in the 'scale' parameter.
 
-If you see:RuntimeError: CUDA error: no kernel image is available for execution on the device
+If you see:RuntimeError: CUDA error: no kernel image is available for execution on the device.
+
 This means your installed PyTorch does not support your GPU architecture.
+
 Please use "decice = 'cpu'", or upgrade PyTorch:
 ```
 pip uninstall -y torch torchvision torchaudio torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv
