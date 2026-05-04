@@ -2,7 +2,7 @@
 Spatially multimodal and multiscale network for representation learning from spatial multi-omics
 ## Installation
 1. Clone this repo.
-2. Copy the "spamm" and "datasets" folders into your project.
+2. Copy the "spamm" and "datasets" folders into your project directory.
 ## Example
 ### Environment
 For testing, we recommend using Anaconda to run our project. You can run the following commands in Anaconda to create the required environment.
